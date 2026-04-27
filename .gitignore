@@ -23,3 +23,7 @@ yarn-error.log
 /.zed
 summarize.py
 .llmignore
+app.txt
+routes.txt
+database.txt
+resources__views.txt

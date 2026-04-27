@@ -7,6 +7,19 @@
 
         <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
             @csrf
+            <!-- Tenant -->
+            @php
+            $tenants = \App\Models\Tenant::all();
+            @endphp
+            <flux:select name="tenant_id"
+                label="Tenant"
+                autofocus
+                placeholder="Choose Tenant...">
+                @foreach ($tenants as $tenant )
+                <flux:select.option :value="$tenant->id">{{ $tenant->name }}</flux:select.option>
+                @endforeach
+            </flux:select>
+
             <!-- Name -->
             <flux:input
                 name="name"
@@ -14,10 +27,8 @@
                 :value="old('name')"
                 type="text"
                 required
-                autofocus
                 autocomplete="name"
-                :placeholder="__('Full name')"
-            />
+                :placeholder="__('Full name')" />
 
             <!-- Email Address -->
             <flux:input
@@ -27,8 +38,7 @@
                 type="email"
                 required
                 autocomplete="email"
-                placeholder="email@example.com"
-            />
+                placeholder="email@example.com" />
 
             <!-- Password -->
             <flux:input
@@ -38,8 +48,7 @@
                 required
                 autocomplete="new-password"
                 :placeholder="__('Password')"
-                viewable
-            />
+                viewable />
 
             <!-- Confirm Password -->
             <flux:input
@@ -49,8 +58,7 @@
                 required
                 autocomplete="new-password"
                 :placeholder="__('Confirm password')"
-                viewable
-            />
+                viewable />
 
             <div class="flex items-center justify-end">
                 <flux:button type="submit" variant="primary" class="w-full" data-test="register-user-button">

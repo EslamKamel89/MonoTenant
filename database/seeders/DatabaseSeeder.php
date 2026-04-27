@@ -2,22 +2,32 @@
 
 namespace Database\Seeders;
 
+use App\Models\Tenant;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
-{
+class DatabaseSeeder extends Seeder {
     /**
      * Seed the application's database.
      */
-    public function run(): void
-    {
-        // User::factory(10)->create();
-
+    public $companies = [
+        'NexaSoft Solutions',
+        'BluePeak Technologies',
+        'Orion Digital Labs',
+        'Vertex Dynamics',
+        'CloudNova Systems',
+    ];
+    public function run(): void {
+        foreach ($this->companies as $company) {
+            $masterTenant = Tenant::create([
+                'name' => $company
+            ]);
+        }
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'admin',
+            'email' => 'admin@gmail.com',
+            'tenant_id' => Tenant::first()->id,
         ]);
     }
 }

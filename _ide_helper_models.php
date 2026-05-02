@@ -13,10 +13,30 @@
 
 namespace App\Models{
 /**
+ * @method static \Database\Factories\ArticleFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Article newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Article newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Article query()
+ */
+	class Article extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $name
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
+ * @property-read int|null $users_count
  * @method static \Database\Factories\TenantFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant whereUpdatedAt($value)
  */
 	class Tenant extends \Eloquent {}
 }
@@ -34,9 +54,12 @@ namespace App\Models{
  * @property string|null $remember_token
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property int $tenant_id
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
+ * @property-read \App\Models\Tenant $tenant
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User myTenant()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
@@ -47,6 +70,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereTenantId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereTwoFactorConfirmedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereTwoFactorRecoveryCodes($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereTwoFactorSecret($value)

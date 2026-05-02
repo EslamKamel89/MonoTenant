@@ -2,19 +2,22 @@
 
 namespace Database\Factories;
 
-use App\Models\Tenant;
+use App\Models\Article;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Tenant>
+ * @extends Factory<Article>
  */
-class TenantFactory extends Factory {
+class ArticleFactory extends Factory {
     /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
      */
     public function definition(): array {
-        return [];
+        return [
+            "title" => $this->faker->text(50),
+            "content" => $this->faker->paragraph(),
+        ];
     }
 }

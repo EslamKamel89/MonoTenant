@@ -9,8 +9,13 @@ return new class extends Migration {
      * Run the migrations.
      */
     public function up(): void {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::create('articles', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('tenant_id')->constrained()->restrictOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('title');
+            $table->text('content')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -18,8 +23,6 @@ return new class extends Migration {
      * Reverse the migrations.
      */
     public function down(): void {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('articles');
     }
 };

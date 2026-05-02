@@ -1,0 +1,22 @@
+<?php
+
+namespace {{ namespace }};
+
+{{ factoryImport }}
+use Illuminate\Database\Eloquent\Model;
+use App\Concerns\BelongsToTenant;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+
+#[Fillable(["tenant_id"])]
+class {{ class }} extends Model
+{
+    {{ factory }}
+    use BelongsToTenant;
+
+     #[Scope]
+    public function myTenant(Builder $query) {
+        return $query->where('tenant_id', auth()->user()->tenant_id);
+    }
+}

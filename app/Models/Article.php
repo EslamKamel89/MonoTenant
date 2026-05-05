@@ -2,18 +2,21 @@
 
 namespace App\Models;
 
-use App\Concerns\BelongsToTenant;
+use App\Concerns\HasTenant;
+use App\Models\Scopes\TenantScope;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[ScopedBy(TenantScope::class)]
 #[Fillable(["tenant_id", "user_id", "title", "content"])]
 class Article extends Model {
     /** @use HasFactory<\Database\Factories\ArticleFactory> */
-    use HasFactory, BelongsToTenant;
+    use HasFactory, HasTenant;
 
     public static function booted() {
         static::creating(function ($model) {
@@ -24,9 +27,5 @@ class Article extends Model {
     }
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);
-    }
-    #[Scope]
-    public function myTenant(Builder $query) {
-        return $query->where('tenant_id', auth()->user()->tenant_id);
     }
 }

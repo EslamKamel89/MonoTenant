@@ -12,7 +12,7 @@ new class extends Component {
     public function mount() {
         $this->users =  User::with(['tenant'])
             ->orderBy($this->sortBy, $this->sortDirection)
-            ->myTenant()
+            // ->myTenant()
             ->get();
     }
     public function sort(string $column) {

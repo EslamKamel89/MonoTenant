@@ -4,6 +4,7 @@ use App\Models\Article;
 use App\Models\User;
 use Livewire\Component;
 use Illuminate\Database\Eloquent\Collection;
+use Livewire\Attributes\On;
 
 new class extends Component {
     /** @var Collection<int, Article> $articles */
@@ -13,7 +14,7 @@ new class extends Component {
     public function mount() {
         $this->articles =  Article::with(['user', 'tenant'])
             ->orderBy($this->sortBy, $this->sortDirection)
-            ->myTenant()
+            // ->myTenant()
             ->get();
     }
     public function sort(string $column) {
@@ -24,10 +25,21 @@ new class extends Component {
             $this->sortDirection = 'asc';
         }
     }
+    #[On('article-created')]
+    public function articleCreated() {
+        $this->articles =  Article::with(['user', 'tenant'])
+            ->orderBy($this->sortBy, $this->sortDirection)
+            // ->myTenant()
+            ->get();
+    }
 };
 ?>
 
 <div>
+    <div class="w-full flex justify-between mb-4">
+        <h2 class="text-xl font-bold">Articles</h2>
+        <livewire:articles.create />
+    </div>
     <flux:table>
         <flux:table.columns>
             <flux:table.column>Title</flux:table.column>

@@ -4,7 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Concerns\BelongsToTenant;
+use App\Concerns\HasTenant;
 use App\Models\Scopes\TenantScope;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -21,12 +21,12 @@ use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
 // i tried to use global scope but this cause an infinite loop where the TenantScope@apply method is called over and over.
-// #[ScopedBy([TenantScope::class])]
+#[ScopedBy([TenantScope::class])]
 #[Fillable(['name', 'email', 'password', 'tenant_id'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, TwoFactorAuthenticatable, BelongsToTenant;
+    use HasFactory, Notifiable, TwoFactorAuthenticatable, HasTenant;
 
     /**
      * Get the attributes that should be cast.
@@ -50,10 +50,7 @@ class User extends Authenticatable {
             ->map(fn($word) => Str::substr($word, 0, 1))
             ->implode('');
     }
-    #[Scope]
-    public function myTenant(Builder $query) {
-        return $query->where('tenant_id', auth()->user()->tenant_id);
-    }
+
     public function articles(): HasMany {
         return $this->hasMany(Article::class);
     }

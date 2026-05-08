@@ -16,6 +16,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Tenant extends Model {
     /** @use HasFactory<\Database\Factories\TenantFactory> */
     use HasFactory;
+
+    protected static function booted(): void {
+        static::creating(function (Tenant $tenant) {
+            if (!$tenant->slug) {
+                $tenant->slug = str($tenant->name)->slug();
+            }
+        });
+    }
     public function users(): HasMany {
         return $this->hasMany(User::class);
     }

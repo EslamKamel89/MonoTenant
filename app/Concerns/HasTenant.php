@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 trait HasTenant {
-    public function Tenant(): BelongsTo {
+    public function tenant(): BelongsTo {
         return $this->belongsTo(Tenant::class);
     }
     #[Scope]

@@ -7,7 +7,9 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class TenantMiddleware {
+class InitializeTenantContext {
+
+
     /**
      * Handle an incoming request.
      *
@@ -15,7 +17,7 @@ class TenantMiddleware {
      */
     public function handle(Request $request, Closure $next): Response {
         if (auth()->check()) {
-            TenantContext::setTenantId(auth()->user()->tenant_id);
+            TenantContext::set(auth()->user()->tenant);
         }
         return $next($request);
     }

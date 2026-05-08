@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder {
     public function run(): void {
         foreach ($this->companies as $company) {
             $masterTenant = Tenant::factory()->create([
-                'name' => $company
+                'name' => $company,
             ])->each(function ($tenant) {
                 $users = User::factory()
                     ->count(10)

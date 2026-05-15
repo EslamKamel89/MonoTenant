@@ -1,7 +1,10 @@
 <?php
 
 use App\Models\Tenant;
+use App\Models\User;
+use App\Services\TenantService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
@@ -26,6 +29,9 @@ new class extends Component {
 
     #[Validate('required|string|min:3|max:255|alpha_dash:ascii|unique:tenants,subdomain')]
     public string $subdomain = '';
+
+    #[Validate('required|integer|exists:users,id')]
+    public int $owner_id;
 
     public function updatedName(): void {
         if (!$this->editing) {
@@ -52,25 +58,31 @@ new class extends Component {
     #[Computed]
     public function tenants() {
         return Tenant::query()
+            ->with(['createdBy', 'owner'])
             ->orderBy($this->sortBy, $this->sortDirection)
             ->paginate(10);
     }
 
+    #[Computed]
+    public function users() {
+        return User::select(['id', 'name'])->get();
+    }
+
     public function create(): void {
         $this->resetForm();
-
         Flux::modal('tenant-create')->show();
     }
 
     public function store(): void {
         $validated = $this->validate();
-
-        Tenant::create([
+        // dd($validated);
+        $tenant = Tenant::create([
             ...$validated,
             'created_by' => Auth::id(),
             'database' => 'tenant_' . Str::random(10),
         ]);
-
+        TenantService::createDb($tenant->database);
+        // todo: migrate to db
         $this->resetForm();
 
         Flux::modal('tenant-create')->close();
@@ -88,7 +100,7 @@ new class extends Component {
         $this->name = $tenant->name;
         $this->slug = $tenant->slug;
         $this->subdomain = $tenant->subdomain;
-
+        $this->owner_id = $tenant->owner_id;
         Flux::modal('tenant-edit')->show();
     }
 
@@ -115,6 +127,7 @@ new class extends Component {
                 'alpha_dash:ascii',
                 'unique:tenants,subdomain,' . $this->editing->id,
             ],
+            'owner_id' => ['required', 'integer', 'exist:users,id'],
         ]);
 
         $this->editing->update($validated);
@@ -205,6 +218,14 @@ new class extends Component {
             </flux:table.column>
 
             <flux:table.column>
+                Owner
+            </flux:table.column>
+
+            <flux:table.column>
+                Created By
+            </flux:table.column>
+
+            <flux:table.column>
                 Actions
             </flux:table.column>
         </flux:table.columns>
@@ -230,6 +251,14 @@ new class extends Component {
                     <code class="text-sm">
                         {{ $tenant->database }}
                     </code>
+                </flux:table.cell>
+
+                <flux:table.cell>
+                    {{ $tenant->owner->name }}
+                </flux:table.cell>
+
+                <flux:table.cell>
+                    {{ $tenant->createdBy->name }}
                 </flux:table.cell>
 
                 <flux:table.cell>
@@ -283,6 +312,15 @@ new class extends Component {
                     label="Subdomain"
                     placeholder="acme-inc" />
 
+                <flux:select
+                    wire:model="owner_id"
+                    placeholder="Choose owner..."
+                    label="Owner">
+                    @foreach ($this->users as $user)
+                    <flux:select.option :value="$user->id">{{ $user->name }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+
                 <div class="flex justify-end gap-2">
                     <flux:modal.close>
                         <flux:button variant="ghost">
@@ -325,6 +363,15 @@ new class extends Component {
                     wire:model.live.debounce.900="subdomain"
                     label="Subdomain"
                     placeholder="acme-inc" />
+
+                <flux:select
+                    wire:model="owner_id"
+                    placeholder="Choose owner..."
+                    label="Owner">
+                    @foreach ($this->users as $user)
+                    <flux:select.option :value="$user->id">{{ $user->name }}</flux:select.option>
+                    @endforeach
+                </flux:select>
 
                 <div class="flex justify-end gap-2">
                     <flux:modal.close>

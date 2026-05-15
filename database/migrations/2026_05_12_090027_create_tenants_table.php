@@ -12,6 +12,7 @@ return new class extends Migration {
         Schema::create('tenants', function (Blueprint $table) {
             $table->id();
             $table->foreignId('created_by')->constrained('users', 'id')->restrictOnDelete();
+            $table->foreignId('owner_id')->constrained('users', 'id')->restrictOnDelete();
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('subdomain')->unique();

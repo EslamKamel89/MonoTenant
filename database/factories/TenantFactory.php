@@ -21,6 +21,7 @@ class TenantFactory extends Factory {
         $slug = str($name)->slug();
         return [
             'created_by' => User::factory(),
+            'owner_id' => User::factory(),
             'name' => $name,
             'slug' => $slug,
             'subdomain' => $slug,

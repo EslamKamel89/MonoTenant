@@ -44,4 +44,7 @@ class User extends Authenticatable {
     public function createdTenants(): HasMany {
         return $this->hasMany(Tenant::class, 'created_by');
     }
+    public function tenants(): HasMany {
+        return $this->hasMany(Tenant::class, 'owner_id');
+    }
 }

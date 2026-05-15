@@ -82,7 +82,6 @@ new class extends Component {
             'database' => 'tenant_' . Str::random(10),
         ]);
         TenantService::createDb($tenant->database);
-        // todo: migrate to db
         $this->resetForm();
 
         Flux::modal('tenant-create')->close();
